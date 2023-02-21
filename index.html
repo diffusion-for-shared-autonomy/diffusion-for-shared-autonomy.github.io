@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="UTF-8">
     <title>To the Noise and Back: Diffusion for Shared Autonomy</title>
@@ -54,10 +54,10 @@
 <body>
 <article>
     <section id="frontmatter">
-        <h1>To the Noise and Back: <br /> Diffusion for Shared Autonomy</h1>
+        <h1>To the Noise and Back:</br></br>Diffusion for Shared Autonomy</h1>
         <h2 id="authors" style="margin-bottom: 0;">
             <a href="http://takuma.yoneda.xyz">Takuma Yoneda</a><sup>1</sup>,
-            Luzhe Sun,<sup>2</sup>,
+            <a href="https://tllokn.github.io/">Luzhe Sun</a><sup>2</sup>,
             <a href="https://www.episodeyang.com">Ge Yang</a><sup>3</sup>,
             <a href="https://bstadie.github.io">Bradly Stadie</a><sup>4</sup>,
             <a href="https://ttic.edu/walter">Matthew Walter</a><sup>1</sup>
@@ -68,11 +68,11 @@
             >|<a href="https://example.com">PAPER</a>
         </h3>
         <h2>Overview</h2>
-        <p><b>Inverse Through Inference</b> (ITI) is a self-supervised adaptation method for a Reinforcement Learning agent.
-            ITI adapts the encoder of an agent to a target domain without access to reward.</p>
+        <p>The diffusion shared autonomy is a method that uses the diffusion model as an inference
+            process to correct the user input to obtain a smooth trajectory and the highest score.</p>
         <p>
             <video autoplay muted loop playsinline width="60%" height="auto" class="center-wide">
-                <source src="media/demo-video-noanimation.webm" type="video/webm">
+                <source src="media/Final-DSA.mov">
             </video>
         </p>
         <!-- <iframe class="video" width="100%" height="338px" src="https://www.youtube.com/embed/KtvTt3U5bME?rel=0"
@@ -163,46 +163,31 @@
 
     <h2 id="experiments">Experiments</h2>
     <p>
-        To experiment our adaptation scheme on various type of target domains, we deployed our agents in DeepMind Control suite.
-        Especially, we employed a modified version of DistractCS that provides <i>color</i>, <i>camera</i>, and <i>background distractions</i> to DeepMind Control suite.
-        <img src="./media/intensity-example.png" alt="intensity-example" class="center">
-    </p>
-    <p>
-        The plot below shows the performance of agents against distraction intensities.
-        DrQ-v2 and SVEA are extensions of SAC that incorporates data augmentation.
-        All of the methods are first trained in source domain (i.e., standard, non-distracting domain), and then directly deployed in taget domain (zero-shot).
-        <br />
-        Dashed lines represent zero-shot performances, and solid lines represent their performance after adaptation with ITI.
-        Each point in this figure is computed from 9 domains and 5 random seeds.
-        <!-- As expected, the performance drops as the intensity goes up. -->
-        <!-- Solid lines represent their performance after adapting the agents with ITI. -->
+        We evaluate our algorithm in the context of four shared autonomy environments including a (a) 2D Control task in
+        which an agent navigates to one of two different goals, (b) Lunar Lander that tasks a drone with
+        landing at a designated location, (c) a Lunar Reacher variant in which the objective is to reach a
+        designated region in the environment, and (d) Block Pushing, in which the objective is to use a robot
+        arm to push an object into one of two different goal regions.
 
-        <img src="./media/main-result.png" alt="main-result" class="center-wide">
+        <img src="./media/exp_env.jpg" width="60%" height="auto" alt="environment" class="center-wide">
     </p>
     <p>
-        Here is the domain-wise breakdown of background distraction with intensity \(1.0\).
-        <img src="./media/main-table.png" alt="main-table" class="center-wide">
-    </p>
+        Success/Corect rates for three different environment with different
+        forward diffusion ratio for noisy pilot. In all plots, the dashed blue line denotes the success rate of
+        the expert pilot, while the dotted blue line is the success rate of our model when performing
+        <i>full</i> diffusion (i.e., \(\gamma = 1.0\) on an action sampled from a zero-mean isotropic Gaussian distribution,
+        which we refer to as a <i>Random</i> pilot in the paper.
 
-    <h2 id="sim-to-real">Sim-to-real</h2>
-    <p>
-        We trained a SVEA agent on a reach task with a simulated Fetch robot, and then deployed the policy on a UR5 robot in the real world.
-    </p>
-
-    <p>
-        <img src="./media/sim-to-real.png" alt="main-result" class="center">
-    </p>
-
-    <p>
-        We find that the zero-shot policy keeps producing the same action regardless of the given observation. In contrast, the policy adapted with ITI shows the ability to consistently reach the goal state.
-        Crucially, our adaptation only requires unpaired trajectories in both domains (simulation and real). What’s more, it does not need access to reward in the target (real) environment.
-    </p>
-
-    <p>
-        <iframe class="center" width="560" height="315" src="https://www.youtube.com/embed/QSCbTsormgo" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <img src="./media/exp_plot.jpg" width="50%" height="auto" alt="plot" class="center-wide">
     </p>
     <p>
-        <small>* The video is played in 20x speed.</small>
+        Following is the statistics information for 3 environments about different pilots with and without assistance,
+        where we show the results for our chosen value \(\gamma = 0.4\) for Lunar Lander and Lunar Reacher and \(\gamma = 0.2\)
+        for Block Pushing.
+        As well as the result of using full diffusion \((\gamma = 1.0)\), which has the effect of removing information
+        about the goal provided by the pilot. Each entry corresponds to \(10\) episodes across \(30\) random seeds.
+        Note that the Zero and Random pilots have no knowledge of the goal.
+        <img src="./media/main-table.jpg" width="50%" height="auto" alt="main-table" class="center-wide">
     </p>
 
 
