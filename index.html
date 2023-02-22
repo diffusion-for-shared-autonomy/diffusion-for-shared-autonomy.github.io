@@ -56,11 +56,11 @@
     <section id="frontmatter">
         <h1>To the Noise and Back:</br></br>Diffusion for Shared Autonomy</h1>
         <h2 id="authors" style="margin-bottom: 0;">
-            <a href="http://takuma.yoneda.xyz">Takuma Yoneda</a><sup>1</sup>,
+            <a href="https://takuma.yoneda.xyz">Takuma Yoneda</a><sup>1</sup>,
             <a href="https://tllokn.github.io/">Luzhe Sun</a><sup>2</sup>,
             <a href="https://www.episodeyang.com">Ge Yang</a><sup>3</sup>,
-            <a href="https://bstadie.github.io">Bradly Stadie</a><sup>4</sup>,
-            <a href="https://ttic.edu/walter">Matthew Walter</a><sup>1</sup>
+            <a href="https://bstadie.github.io">Bradly C. Stadie</a><sup>4</sup>,
+            <a href="https://ttic.edu/walter">Matthew R. Walter</a><sup>1</sup>
         </h2>
         <h3 style="margin-top: 10px;"><sup>1</sup>TTI-Chicago, <sup>2</sup>University of Chicago, <sup>3</sup>MIT CSAIL, <sup>4</sup>Northwestern University </h3>
         <h3 id="links">
@@ -68,8 +68,11 @@
             >|<a href="https://example.com">PAPER</a>
         </h3>
         <h2>Overview</h2>
-        <p>The diffusion shared autonomy is a method that uses the diffusion model as an inference
-            process to correct the user input to obtain a smooth trajectory and the highest score.</p>
+        <p>
+            We present a new approach to learn an assistive policy based on diffusion models.
+            With the partial forward-and-reverse diffusion process we introduce,
+            the diffusion model pretrained on expert demonstrations
+            can improve user input (avoiding failures, enabling smoother control) while preserving their intention.</p>
         <p>
             <video autoplay muted loop playsinline width="60%" height="auto" class="center-wide">
                 <source src="media/Final-DSA.mov">
@@ -79,91 +82,85 @@
              frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
              allowfullscreen></iframe> -->
     </section>
-    <h2 id="abstract">Abstract</h2>
-    <p>
-        Shared autonomy is an operational concept in which a user and an autonomous agent collaboratively control a robotic system.
-        It provides a number of advantages over the extremes of full-teleoperation and full-autonomy in many settings.
-        Traditional approaches to shared autonomy rely on knowledge of the environment dynamics,
-        a discrete space of user goals that is known a priori, or knowledge of the user's policy---assumptions that are unrealistic in many domains.
-        Recent works relax these assumptions by formulating shared autonomy with model-free deep reinforcement learning (RL), and train the agent's policy that produces an action close to that of the user while satisfying value function constraints.
-        These formulations inherently rely on human-in-the-loop training to learn the assistant's policy and, in practice, replace the user with a surrogate policy for the sake of training efficiency.
-        In effect, this trades one difficulty for another. While we no longer need knowledge of the goal space (e.g., that the goals are discrete or constrained), we do need knowledge of  a task-specific reward function to train the policy. Unfortunately, such reward specification can be a difficult and brittle process.
-        In this paper, we present a new approach to shared autonomy that employs a modulation of the forward and reverse diffusion process of diffusion models.
-        Our approach does not assume known environment dynamics or the space of user goals, and in contrast to previous work,
-        it does not require any reward feedback, nor does it require access to the user's policy (surrogate or otherwise) during training.
-        Instead, our framework learns a distribution over a potentially multimodal space of desired behaviors.
-        It then employs a diffusion model to adapt the user's actions to a sample from this distribution. Crucially,
-        we show that it is possible to carry out this process in a manner that preserves the user's control authority.
-        We evaluate our framework on a series of challenging continuous control tasks, and analyze its ability to effectively correct
-        user actions while maintaining their autonomy.
-    </p>
+    <!-- <h2 id="abstract">Abstract</h2>
+         <p>
+         Shared autonomy is an operational concept in which a user and an autonomous agent collaboratively control a robotic system.
+         It provides a number of advantages over the extremes of full-teleoperation and full-autonomy in many settings.
+         Traditional approaches to shared autonomy rely on knowledge of the environment dynamics,
+         a discrete space of user goals that is known a priori, or knowledge of the user's policy---assumptions that are unrealistic in many domains.
+         Recent works relax these assumptions by formulating shared autonomy with model-free deep reinforcement learning (RL), and train the agent's policy that produces an action close to that of the user while satisfying value function constraints.
+         These formulations inherently rely on human-in-the-loop training to learn the assistant's policy and, in practice, replace the user with a surrogate policy for the sake of training efficiency.
+         In effect, this trades one difficulty for another. While we no longer need knowledge of the goal space (e.g., that the goals are discrete or constrained), we do need knowledge of  a task-specific reward function to train the policy. Unfortunately, such reward specification can be a difficult and brittle process.
+         In this paper, we present a new approach to shared autonomy that employs a modulation of the forward and reverse diffusion process of diffusion models.
+         Our approach does not assume known environment dynamics or the space of user goals, and in contrast to previous work,
+         it does not require any reward feedback, nor does it require access to the user's policy (surrogate or otherwise) during training.
+         Instead, our framework learns a distribution over a potentially multimodal space of desired behaviors.
+         It then employs a diffusion model to adapt the user's actions to a sample from this distribution. Crucially,
+         we show that it is possible to carry out this process in a manner that preserves the user's control authority.
+         We evaluate our framework on a series of challenging continuous control tasks, and analyze its ability to effectively correct
+         user actions while maintaining their autonomy.
+         </p> -->
+    <h2 id="what-is-shared-autonomy">What is shared autonomy?</h2>
+        <p>
+            Shared autonomy considers a setting where a user and an assistant agent work together to control a system. <br />
+            The assistant agent aims to prevent failures by user's mistakes (e.g., driving a vehicle into a tree etc), while preserving their intention (e.g., destination).
+        </p>
 
     <h2 id="motivation">Motivation</h3>
-    <p>
-        Pixel-based RL agents are known to be brittle against distractions, due to its large shift in observation space.
-        A typical approach to this issue is to apply <b>data augmentation</b>.
-        This corresponds to expanding the support of the training distribution, as shown in the green circle below.
-        <!-- SVEA, DrQ-v2 and SODA are among those methods. -->
-    </p>
-    <p>
-        Training with augmented observations makes the agent more robust against distractions,
-        however, as the target distribution (the pink circle below) goes far away from training,
-        more and more augmentations becomes necessary, which becomes infeasible at some point.
-        <img src="./media/motivation2.png" alt="motivation" class="center-narrow">
-    </p>
-
-    <p>
-        When we have some knowledge of the target (test) domain, a better approach would be <b>domain adaptation</b>
-        that adapt the agent to the target (test) domain.
-
-        In this paper, we assume the target domain is accessible except for its reward, and
-        propose <b>Invariance Through Inference</b> (ITI) that performs self-supervised domain adaptation.
-        Specifically, ITI adapts an observation encoder
-        so that the pretrained downstream policy \(\pi(a|z)\) can transfer to the target domain without modification.
-
-        <!-- <img src="./motivation.png" alt="ITI-motivation" class="center"> -->
-
-        <!-- The shift in observation space makes the corresponding latent space largely deviate.
-             The task of ITI is to bring it back to align the latent structures, by adapting the encoder. -->
-    </p>
-    <p>
-        We consider that it is <u>the large distribution shift in the latent space</u> that causes a poor performance in the target domain.
-        Our approach attempts to <i>undo</i> this shift, by adapting the encoder based on two objectives: <i>distribution matching</i> and <i>dynamics consistency</i>.
-    </p>
+    <div>
+        <div class="side-by-side">
+            <div>
+                <p>
+                    Once trained, diffusion models can pull <strong>a noisy sample</strong> back to the <strong>training data manifold</strong>.
+                    More accurately, diffusion models learn a gradient field, where a vector at each location points toward higher likelihood region in the training data distribution. <br />
+                    In the same way, when a diffusion model is trained on expert demonstrations (state-conditioned actions), <br \>
+                    it should be able to pull <strong>a noisy action</strong> closer to the <strong>expert action manifold</strong>.
+                </p>
+            </div>
+            <img src="./media/gradient-field4.png">
+        </div>
+        <p>
+            Now, let us consider shared autonomy setting.
+            A user produces a suboptimal action \(a^h_t\), and our assistive agent needs to correct it.
+            If we pretend that the action \(a^h_t\) is <strong>the noisy action</strong>,
+            the pretrained diffusion model will correct the action to make it look more like an expert action.
+            <!-- <img src="./media/motivation2.png" alt="motivation" class="center-narrow"> -->
+        </p>
+        <p>
+            This achieves <i>assisting</i> the user by correcting its action.
+            <!-- This is exactly what we want. <br \> -->
+            Diffusion model trained on expert demonstrations should be able to serve as an assistive agent!
+        </p>
+    </div>
 
     <h2 id="method">Method</h2>
-    <p>
-        Given an agent pretrained in a source domain, a random policy collects transitions in the source domain.
-        The observations are encoded with pretrained encoder, and the resulting <i>latent</i> transitions \((z_t, a_t, z_{t+1})\) are stored into source buffer.
-        <!-- It should be noted that we encode observations and store <i>latent</i> transitions . -->
-        <img src="./media/preprocess1.png" alt="ITI-preprocess" class="center-wide">
-        Succeedingly, we pretrain dynamics networks \(C_\text{dyn}\) using samples from the buffer.
-        \(C_\text{dyn}\) consists of forward dynamics network \(\hat{z}_{t+1} = C_\text{fwd}(z_t, a_t)\)
-        and inverse dynamics network \(\hat{a}_t = C_\text{inv}(z_t, z_{t+1})\).
-        We can think of this step as implicitly encoding the latent transition structure (somewhat like MDP) of the source domain into the weights of these networks.
-    </p>
-    <p>
-        We also collect random transitions in the target domain. But this time we store transitions with raw observations \((o_t, a_t, o_{t+1})\).
-        <img src="./media/preprocess2.png" alt="ITI-preprocess" width="60%" class="center">
-    </p>
-    <p>
-        Once the preprocessing steps described above are completed, the main adaptation step begins.
-        We use sample transitions from source and target buffer, and train encoder \(F\) (intialized to the pretrained weights) and discriminator \(D\) (initialized randomly).
+    <div>
+        <p>
+            A standard diffusion model runs the reverse diffusion (i.e., denoising) process from Gaussian distribution to generate a sample.
+            Sampling from Gaussian distribution is equivalent to applying the forward diffusion (i.e., noising) process to an arbitrary sample.
+            Thus, this standard generation procedure can be seen as applying the forward and then reverse diffusion process to a sample.
+        </p>
+        <p>
+            We consider applying the forward diffusion process on the user action <strong>partially</strong> (quantified via the <i>forward diffusion ratio</i> \(\gamma\)),
+            followed by the reverse diffusion process for the same number of steps.
+            The property of generated action changes according to \(\gamma\):
+            <!-- In this procedure, \(k\) controls the trade-off between -->
+            <!-- This amounts to adding Gaussian noise to the user action iteratively. -->
+        </p>
+        <ul>
+            <li>When \(\gamma\) is small, the resulting action is close to the user action (i.e., high fidelity to user's intention) </li>
+            <li>When \(\gamma\) is large, the resulting action has high likelihood in expert distribution (i.e., high conformity to expert)</li>
+        </ul>
 
 
-        <!-- ITI adapts encoder following the two objectives: <i>distribution matching</i> and <i>dynamics consistency</i>. -->
-        <!-- <img src="./method.png" alt="ITI" class="center"> -->
-        <video autoplay muted loop playsinline class="center" poster="media/method.png">
-            <source src="media/method2.webm" type="video/webm">
-            <!-- <source src="media/method.mp4" type="video/mp4"> -->
-        </video>
-        <small>* You can download the static version <a href="media/method-static.png">here</a></small>
+        With a diffusion model pretrained on expert demonstrations (state-conditioned actions),
+        we apply this partial diffusion procedure on the user action \(a^h_t\) to generate a corrected shared action \(a^s_t\) and execute it.
+    </div>
 
-    </p>
 
     <h2 id="experiments">Experiments</h2>
     <p>
-        We evaluate our algorithm in the context of four shared autonomy environments including a (a) 2D Control task in
+        We evaluate our algorithm in four shared autonomy environments including a (a) 2D Control task in
         which an agent navigates to one of two different goals, (b) Lunar Lander that tasks a drone with
         landing at a designated location, (c) a Lunar Reacher variant in which the objective is to reach a
         designated region in the environment, and (d) Block Pushing, in which the objective is to use a robot
@@ -172,16 +169,15 @@
         <img src="./media/exp_env.jpg" width="60%" height="auto" alt="environment" class="center-wide">
     </p>
     <p>
-        Success/Corect rates for three different environment with different
-        forward diffusion ratio for noisy pilot. In all plots, the dashed blue line denotes the success rate of
-        the expert pilot, while the dotted blue line is the success rate of our model when performing
-        <i>full</i> diffusion (i.e., \(\gamma = 1.0\) on an action sampled from a zero-mean isotropic Gaussian distribution,
-        which we refer to as a <i>Random</i> pilot in the paper.
+        The following plots show success rate vs forward diffusion ratio \(\gamma\)
+        for noisy expert. The dashed blue lines denote the success rates of
+        the original expert, while the dotted blue lines are the success rate of our model with
+        <i>full</i> diffusion (i.e., \(\gamma = 1.0\) ).
 
         <img src="./media/exp_plot.jpg" width="50%" height="auto" alt="plot" class="center-wide">
     </p>
     <p>
-        Following is the statistics information for 3 environments about different pilots with and without assistance,
+        Following is the statistics information for three environments about different pilots with and without assistance,
         where we show the results for our chosen value \(\gamma = 0.4\) for Lunar Lander and Lunar Reacher and \(\gamma = 0.2\)
         for Block Pushing.
         As well as the result of using full diffusion \((\gamma = 1.0)\), which has the effect of removing information
@@ -194,11 +190,11 @@
 
 
     <h2>BibTex</h2>
-    <pre>@misc{yoneda2021invariance,
-        title={Invariance Through Inference},
-        author={Takuma Yoneda and Ge Yang and Matthew R. Walter and Bradly Stadie},
-        year={2021},
-        eprint={2112.08526},
+    <pre>@misc{yoneda2023diffusha,
+        title={To the Noise and Back: Diffusion for Shared Autonomy},
+        author={Takuma Yoneda and Luzhe Sun and Ge Yang and Bradly C. Stadie and Matthew R. Walter},
+        year={2023},
+        eprint={...},
         archivePrefix={arXiv},
         primaryClass={cs.LG}
     }</pre>

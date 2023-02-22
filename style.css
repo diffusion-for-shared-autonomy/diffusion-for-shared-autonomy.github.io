@@ -141,6 +141,12 @@ h2, h3, p {
     grid-column: 2 / span 3;
 }
 
+div {
+    text-align: justify;
+    text-justify: inter-word;
+    grid-column: 2 / span 3;
+}
+
 pre {
     line-break: anywhere;
     white-space: pre-wrap;
@@ -168,4 +174,25 @@ iframe.video {
 a {
     color: #345cc1;
     text-decoration: none;
+}
+
+.side-by-side {
+    display: flex;
+    /* flex-wrap: wrap; */
+    /* justify-content: center; */
+}
+
+.side-by-side > img,
+.side-by-side > div {
+    display: flex;
+    flex-grow: 1;
+}
+
+.side-by-side img {
+    padding-left: 2.5em;
+    min-width: 25%;
+    /* width: 200px; */
+    display: flex;
+    flex-grow: 1;
+    /* align-items: center; */
 }
