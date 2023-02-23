@@ -58,14 +58,17 @@
         <h2 id="authors" style="margin-bottom: 0;">
             <a href="https://takuma.yoneda.xyz">Takuma Yoneda</a><sup>1</sup>,
             <a href="https://tllokn.github.io/">Luzhe Sun</a><sup>2</sup>,
-            <a href="https://www.episodeyang.com">Ge Yang</a><sup>3</sup>,
-            <a href="https://bstadie.github.io">Bradly C. Stadie</a><sup>4</sup>,
+            <a href="https://www.episodeyang.com">Ge Yang</a><sup>3, 4</sup>,
+            <a href="https://bstadie.github.io">Bradly C. Stadie</a><sup>5</sup>,
             <a href="https://ttic.edu/walter">Matthew R. Walter</a><sup>1</sup>
         </h2>
-        <h3 style="margin-top: 10px;"><sup>1</sup>TTI-Chicago, <sup>2</sup>University of Chicago, <sup>3</sup>MIT CSAIL, <sup>4</sup>Northwestern University </h3>
+        <h3 style="margin-top: 10px;"><sup>1</sup>TTI-Chicago, <sup>2</sup>University of Chicago, <sup>3</sup>MIT CSAIL, <sup>4</sup>IAIFI, <sup>5</sup>Northwestern University </h3>
         <h3 id="links">
-            <a href="https://github.com/ripl/diffusion-shared-autonomy">CODE</a
-            >|<a href="https://example.com">PAPER</a>
+            <div class="tooltip">CODE
+                <span class="tooltiptext">will be available shortly</span>
+            </div>
+            <!-- <a href="https://github.com/ripl/diffusion-shared-autonomy">CODE</a> -->
+            |<a href="https://example.com">PAPER</a>
         </h3>
         <h2>Overview</h2>
         <p>
@@ -154,7 +157,8 @@
 
 
         With a diffusion model pretrained on expert demonstrations (state-conditioned actions),
-        we apply this partial diffusion procedure on the user action \(a^h_t\) to generate a corrected shared action \(a^s_t\) and execute it.
+        we apply this partial diffusion procedure on the user action \(a^h_t\) to generate a corrected shared action \(a^s_t\).
+        <img src="./media/fwd-rev-diffusion2.png" width="60%" height="auto" alt="fwd-rev-diffusion" class="center-wide">
     </div>
 
 
