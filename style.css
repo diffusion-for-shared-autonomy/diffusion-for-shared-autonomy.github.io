@@ -149,7 +149,7 @@ div {
 
 pre {
     line-break: anywhere;
-    white-space: pre-wrap;
+    white-space: pre;
     word-wrap: break-word;
     grid-column: 2 / span 3;
     transition: all 1s;
