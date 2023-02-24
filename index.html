@@ -77,7 +77,7 @@
             the diffusion model pretrained on expert demonstrations
             can improve user input (avoiding failures, enabling smoother control) while preserving their intention.</p>
         <p>
-            <video autoplay muted loop playsinline width="60%" height="auto" class="center-wide">
+            <video autoplay muted loop playsinline width="60%" height="auto" class="center">
                 <source src="media/ShortVideo.webm">
             </video>
         </p>
@@ -158,7 +158,7 @@
 
         With a diffusion model pretrained on expert demonstrations (state-conditioned actions),
         we apply this partial diffusion procedure on the user action \(a^h_t\) to generate a corrected shared action \(a^s_t\).
-        <img src="./media/fwd-rev-diffusion2.png" width="60%" height="auto" alt="fwd-rev-diffusion" class="center-wide">
+        <img src="./media/fwd-rev-diffusion2.png" width="60%" height="auto" alt="fwd-rev-diffusion" class="center">
     </div>
 
 
@@ -178,14 +178,14 @@
         the original expert, while the dotted blue lines are the success rate of our model with
         <i>full</i> diffusion (i.e., \(\gamma = 1.0\) ).
 
-        <img src="./media/exp_plot.jpg" width="50%" height="auto" alt="plot" class="center-wide">
+        <img src="./media/exp_plot.jpg" width="50%" height="auto" alt="plot" class="center">
     </p>
     <p>
         Following is the statistics information for three environments about different pilots with and without assistance,
         where we show the results for our chosen value \(\gamma = 0.4\) for Lunar Lander and Lunar Reacher and \(\gamma = 0.2\)
         for Block Pushing.
         Each entry corresponds to \(10\) episodes across \(30\) random seeds.
-        <img src="./media/BarPlot.png" width="70%" height="auto" alt="main-table" class="center-wide">
+        <img src="./media/BarPlot.png" width="70%" height="auto" alt="main-table" class="center">
     </p>
 
 
