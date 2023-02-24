@@ -76,9 +76,17 @@ article {
 }
 @media only screen and (max-width: 768px) {
     article {
-        grid-template-columns: 1fr 0 fit-content(600px) 0 1fr;
+        /* grid-template-columns: 1fr 0 fit-content(600px) 0 1fr; */
+        /* grid-template-columns: 1fr 1fr fit-content(600px) 1fr 1fr; */
+        grid-template-columns: 1fr 3fr 1fr;
         grid-column-gap: 20px;
     }
+    /* #frontmatter p { */
+    /*     grid-column: 3 / span 1; */
+    /* } */
+    /* #frontmatter iframe { */
+    /*     grid-column: 3 / span 1; */
+    /* } */
     #frontmatter p {
         grid-column: 2 / span 3;
     }

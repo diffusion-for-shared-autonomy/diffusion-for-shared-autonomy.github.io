@@ -111,17 +111,15 @@
 
     <h2 id="motivation">Motivation</h3>
     <div>
-        <div class="side-by-side">
-            <div>
-                <p>
-                    Once trained, diffusion models can pull <strong>a noisy sample</strong> back to the <strong>training data manifold</strong>.
-                    More accurately, diffusion models learn a gradient field, where a vector at each location points toward higher likelihood region in the training data distribution. <br />
-                    In the same way, when a diffusion model is trained on expert demonstrations (state-conditioned actions), <br \>
-                    it should be able to pull <strong>a noisy action</strong> closer to the <strong>expert action manifold</strong>.
-                </p>
-            </div>
-            <img src="./media/gradient-field4.png">
-        </div>
+        <p>
+            Once trained, diffusion models can pull <strong>a noisy sample</strong> back to the <strong>training data manifold</strong>.
+            More accurately, diffusion models learn a gradient field, where a vector at each location points toward higher likelihood region in the training data distribution.
+        </p>
+        <p>
+            In the same way, when a diffusion model is trained on expert demonstrations (state-conditioned actions),
+            it should be able to pull <strong>a noisy action</strong> closer to the <strong>expert action manifold</strong>.
+        </p>
+        <!-- <img src="./media/gradient-field4.png"> -->
         <p>
             Now, let us consider shared autonomy setting.
             A user produces a suboptimal action \(a^h_t\), and our assistive agent needs to correct it.
