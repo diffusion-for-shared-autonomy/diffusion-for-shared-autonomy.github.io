@@ -74,7 +74,7 @@ article {
     grid-template-columns: 1fr 140px fit-content(600px) 140px 1fr;
     grid-column-gap: 20px;
 }
-@media only screen and (max-width: 781px) {
+@media only screen and (max-width: 768px) {
     article {
         grid-template-columns: 1fr 0 fit-content(600px) 0 1fr;
         grid-column-gap: 20px;
@@ -86,7 +86,7 @@ article {
         grid-column: 2 / span 3;
     }
 }
-@media only screen and (min-width: 781px) and (max-width: 959px) {
+@media only screen and (min-width: 768px) and (max-width: 959px) {
     article {
         grid-template-columns: 1fr 1fr fit-content(600px) 1fr 1fr;
         grid-column-gap: 20px;
@@ -136,7 +136,7 @@ h3, h4, h5, h6, p {
 }
 
 h2, h3, p {
-    text-align: justify;
+    text-align: left;
     text-justify: inter-word;
     grid-column: 2 / span 3;
 }
